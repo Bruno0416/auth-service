@@ -6,8 +6,10 @@ import com.mariluz.auth_service.dto.RegisterRequest;
 import com.mariluz.auth_service.exceptions.EmailAlreadyInUseException;
 import com.mariluz.auth_service.exceptions.EmailNotFoundException;
 import com.mariluz.auth_service.exceptions.InvalidCredentialsException;
+import com.mariluz.auth_service.model.Role;
 import com.mariluz.auth_service.model.User;
 import com.mariluz.auth_service.repository.AuthRepo;
+import com.mariluz.auth_service.security.JwtUtil;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +23,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     private PasswordEncoder encoder;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     @Override
     public AuthResponse register(RegisterRequest request) {
@@ -36,18 +41,17 @@ public class AuthServiceImpl implements AuthService {
             .userName(request.getUserName())
             .email(request.getEmail())
             .password(encoder.encode(request.getPassword())) // guardamos el hash no la contrasenia real
+            .role(Role.USER)
             .build();
 
         // creamos la tupla partir del objeto user
         repo.save(user);
 
-        String token = UUID.randomUUID().toString();
-
         // 3. retornamos la respuesta
         return AuthResponse.builder()
-            .userName(user.getUserName())
+            .userName(user.getUsername())
             .email(user.getEmail())
-            .token(token)
+            .token(jwtUtil.generateToken(user))
             .build();
     }
 
@@ -73,7 +77,7 @@ public class AuthServiceImpl implements AuthService {
         return AuthResponse.builder()
             .token(token)
             .email(user.getEmail())
-            .userName(user.getUserName())
+            .userName(user.getUsername())
             .build();
     }
 }
