@@ -11,6 +11,4 @@ public interface AuthRepo extends JpaRepository<User, UUID> {
     public Optional<User> findByEmail(String email);
 
     public boolean existsByEmail(String email);
-
-    public Optional<User> findByUsername(String username);
 }

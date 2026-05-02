@@ -40,7 +40,5 @@ public class AuthController {
         return ResponseEntity.ok(service.login(request));
     }
 
-    // ValidateToken: valida token para conexion con el resto de MS
-
-    // Logout: invalida las sesiones del usuario
+    //
 }

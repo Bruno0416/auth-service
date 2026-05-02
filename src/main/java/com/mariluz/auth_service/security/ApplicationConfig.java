@@ -20,6 +20,11 @@ public class ApplicationConfig {
     private AuthRepo repo;
 
     @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
     public AuthenticationManager authenticationManager(
         AuthenticationConfiguration config
     ) {
@@ -37,19 +42,12 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
     public UserDetailsService userDetailService() {
         return username ->
             repo
-                .findByUsername(username)
+                .findByEmail(username)
                 .orElseThrow(() ->
                     new UsernameNotFoundException("User not found")
                 );
     }
 }
-
-// TODO: Continuar video Ivana "https://www.youtube.com/watch?v=nwqQYCM4YT8" min 48:54

@@ -27,10 +27,10 @@ public class User implements UserDetails {
     @Column(nullable = false, updatable = false)
     private UUID id;
 
-    // userName: nombre de usuario
+    // username: nombre de usuario
     @NotBlank(message = "El nombre de usuario no puede estar vacio")
     @Column(nullable = false, length = 50)
-    private String userName;
+    private String username;
 
     // email: por defecto para inicio de sesion
     @Email(message = "Debe ser un correo valido: email@example.com")
@@ -60,7 +60,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return userName;
+        return email;
     }
 
     @Override

@@ -10,7 +10,6 @@ import com.mariluz.auth_service.model.Role;
 import com.mariluz.auth_service.model.User;
 import com.mariluz.auth_service.repository.AuthRepo;
 import com.mariluz.auth_service.security.JwtUtil;
-import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -38,7 +37,7 @@ public class AuthServiceImpl implements AuthService {
         }
         // 2. si no existe creamos el objeto
         User user = User.builder()
-            .userName(request.getUserName())
+            .username(request.getUserName())
             .email(request.getEmail())
             .password(encoder.encode(request.getPassword())) // guardamos el hash no la contrasenia real
             .role(Role.USER)
@@ -71,11 +70,10 @@ public class AuthServiceImpl implements AuthService {
             // verificamos si la contrasenia coincide
             throw new InvalidCredentialsException("Credenciales invalidas."); // si no arrojamos error de credenciales
         }
-        // 3. crear token
-        String token = UUID.randomUUID().toString();
-        // 4. retornar respuesta
+
+        // 3. retornar respuesta
         return AuthResponse.builder()
-            .token(token)
+            .token(jwtUtil.generateToken(user))
             .email(user.getEmail())
             .userName(user.getUsername())
             .build();
