@@ -9,7 +9,7 @@ import lombok.Data;
 @Builder
 public class AuthResponse {
 
-    // No es necesario agrear validaciones
+    // No es necesario agrear validaciones en el response
     private String token;
     private String email;
     private String userName;

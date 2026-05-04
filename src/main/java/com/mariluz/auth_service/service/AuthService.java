@@ -7,6 +7,7 @@ package com.mariluz.auth_service.service;
 
 import com.mariluz.auth_service.dto.AuthResponse;
 import com.mariluz.auth_service.dto.LoginRequest;
+import com.mariluz.auth_service.dto.MeResponse;
 import com.mariluz.auth_service.dto.RegisterRequest;
 
 public interface AuthService {
@@ -15,4 +16,7 @@ public interface AuthService {
 
     // login
     public AuthResponse login(LoginRequest request);
+
+    // me (retorna informacion del usuario)
+    public MeResponse me();
 }
