@@ -24,7 +24,6 @@ public class User implements UserDetails {
     // id clase tipo UUID (cadena de texto unica)
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(nullable = false, updatable = false)
     private UUID id;
 
     // username: nombre de usuario
@@ -35,11 +34,11 @@ public class User implements UserDetails {
     // email: por defecto para inicio de sesion
     @Email(message = "Debe ser un correo valido: email@example.com")
     @NotBlank(message = "El email no puede estar vacio")
-    @Column(unique = true)
+    @Column(unique = true, length = 150)
     private String email;
 
     // password (hash NO contrasenia real)
-    @Column(nullable = false)
+    @Column(nullable = false, length = 30) //30 de largo debe ser suficiente
     private String password;
 
     // booleano para saber si tiene permisos de admin
