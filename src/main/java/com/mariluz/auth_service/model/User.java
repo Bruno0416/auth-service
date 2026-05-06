@@ -28,8 +28,8 @@ public class User implements UserDetails {
 
     // username: nombre de usuario
     @NotBlank(message = "El nombre de usuario no puede estar vacio")
-    @Column(nullable = false, length = 50)
-    private String username;
+    @Column(nullable = false, length = 50, name = "username") // dejamos el nombre username solo para la db
+    private String name; // y dejamos el campo de la clase como 'name' para no tener conflictos con springboot security
 
     // email: por defecto para inicio de sesion
     @Email(message = "Debe ser un correo valido: email@example.com")
@@ -41,7 +41,7 @@ public class User implements UserDetails {
     @Column(nullable = false, length = 30) //30 de largo debe ser suficiente
     private String password;
 
-    // booleano para saber si tiene permisos de admin
+    // enum con el rol
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;

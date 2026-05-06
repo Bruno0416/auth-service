@@ -1,5 +1,6 @@
 package com.mariluz.auth_service.security;
 
+import com.mariluz.auth_service.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -39,8 +40,18 @@ public class JwtUtil {
     }
 
     // generar token publico llama al getToken privado
-    public String generateToken(UserDetails user) {
-        return getToken(new HashMap<>(), user);
+    public String generateToken(User user) {
+        // agregar extra claims (datos del usuario) para no requerir un endpoint extra
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("id", user.getId());
+        extraClaims.put("name", user.getName());
+        extraClaims.put("email", user.getEmail());
+        extraClaims.put("role", user.getRole());
+        /*
+            Guardamos los datos del usuario en el token usando los extraClaims
+            para poder extraerlos en el resto de microservicios sin tener que comunicarnos directamente con Auth.
+        */
+        return getToken(extraClaims, user);
     }
 
     // getToken genera el token real con claims(role y otros datos) y usuario

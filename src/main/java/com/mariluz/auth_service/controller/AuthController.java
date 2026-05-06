@@ -39,6 +39,4 @@ public class AuthController {
     ) {
         return ResponseEntity.ok(service.login(request));
     }
-
-    //
 }
