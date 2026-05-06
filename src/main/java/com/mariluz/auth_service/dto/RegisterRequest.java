@@ -17,5 +17,5 @@ public class RegisterRequest {
     private String password;
 
     @NotBlank(message = "El nombre de usuario es obligatorio.")
-    private String userName;
+    private String name;
 }

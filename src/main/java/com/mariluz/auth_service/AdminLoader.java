@@ -6,12 +6,13 @@ import com.mariluz.auth_service.repository.AuthRepo;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class AdminLoader {
 
     @Bean
-    CommandLineRunner init(AuthRepo repo) {
+    CommandLineRunner init(AuthRepo repo, PasswordEncoder encoder) {
         return args -> {
             String email = "mariluz@costurera.cl";
 
@@ -20,7 +21,7 @@ public class AdminLoader {
                     User.builder()
                         .name("MariLuz")
                         .email(email)
-                        .password("123456")
+                        .password(encoder.encode("123456"))
                         .role(Role.ADMIN)
                         .build()
                 );
