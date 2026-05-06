@@ -38,7 +38,7 @@ public class User implements UserDetails {
     private String email;
 
     // password (hash NO contrasenia real)
-    @Column(nullable = false, length = 30) //30 de largo debe ser suficiente
+    @Column(nullable = false)
     private String password;
 
     // enum con el rol
