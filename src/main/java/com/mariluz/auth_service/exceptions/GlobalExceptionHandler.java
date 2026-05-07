@@ -1,5 +1,6 @@
 package com.mariluz.auth_service.exceptions;
 
+import jakarta.validation.ConstraintViolationException;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
@@ -39,6 +40,22 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
             Map.of("error", ex.getMessage())
         );
+    }
+
+    // Handler Jakarta contraint violation exception
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<Map<String, String>> handleJakartaViolationException(
+        ConstraintViolationException ex
+    ) {
+        Map<String, String> errors = new HashMap<>();
+
+        ex
+            .getConstraintViolations()
+            .forEach(v -> {
+                errors.put(v.getPropertyPath().toString(), v.getMessage());
+            });
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
 
     // Global Handler | Validacion BindingResult ahora se corrobora aqui en el global handler
