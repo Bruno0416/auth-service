@@ -5,7 +5,7 @@ import com.mariluz.auth_service.dto.LoginRequest;
 import com.mariluz.auth_service.dto.RegisterRequest;
 import com.mariluz.auth_service.service.AuthService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -13,15 +13,10 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
+@RequiredArgsConstructor // inyeccion del service en el constructor
 public class AuthController {
 
     private final AuthService service;
-
-    // inyeccion del service
-    @Autowired
-    public AuthController(AuthService service) {
-        this.service = service;
-    }
 
     //ENDPOINTS:
 

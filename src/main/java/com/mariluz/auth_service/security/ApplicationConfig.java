@@ -1,7 +1,7 @@
 package com.mariluz.auth_service.security;
 
 import com.mariluz.auth_service.repository.AuthRepo;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,14 +14,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
+@RequiredArgsConstructor // genera el constructor automaticamente e inyecta dependencias 'final'
 public class ApplicationConfig {
 
     private final AuthRepo repo;
-
-    @Autowired
-    public ApplicationConfig(AuthRepo repo) {
-        this.repo = repo;
-    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {

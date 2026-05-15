@@ -10,11 +10,12 @@ import com.mariluz.auth_service.model.Role;
 import com.mariluz.auth_service.model.User;
 import com.mariluz.auth_service.repository.AuthRepo;
 import com.mariluz.auth_service.security.JwtUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
     private final AuthRepo repo;
@@ -22,17 +23,6 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder encoder;
 
     private final JwtUtil jwtUtil;
-
-    @Autowired
-    public AuthServiceImpl(
-        AuthRepo repo,
-        PasswordEncoder encoder,
-        JwtUtil jwtUtil
-    ) {
-        this.repo = repo;
-        this.encoder = encoder;
-        this.jwtUtil = jwtUtil;
-    }
 
     @Override
     public AuthResponse register(RegisterRequest request) {

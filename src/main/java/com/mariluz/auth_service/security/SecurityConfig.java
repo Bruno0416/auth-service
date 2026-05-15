@@ -1,6 +1,6 @@
 package com.mariluz.auth_service.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -10,20 +10,12 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     private final AuthenticationProvider authProvider;
-
-    @Autowired
-    public SecurityConfig(
-        JwtAuthenticationFilter jwtAuthenticationFilter,
-        AuthenticationProvider authProvider
-    ) {
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-        this.authProvider = authProvider;
-    }
 
     /*
     SpringBoot por defecto bloquea los endponits al importar algo del paquete 'security' en este caso el
