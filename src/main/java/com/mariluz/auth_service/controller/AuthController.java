@@ -15,9 +15,13 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/auth")
 public class AuthController {
 
+    private final AuthService service;
+
     // inyeccion del service
     @Autowired
-    private AuthService service;
+    public AuthController(AuthService service) {
+        this.service = service;
+    }
 
     //ENDPOINTS:
 

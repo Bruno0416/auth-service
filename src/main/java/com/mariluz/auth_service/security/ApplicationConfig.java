@@ -16,8 +16,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 public class ApplicationConfig {
 
+    private final AuthRepo repo;
+
     @Autowired
-    private AuthRepo repo;
+    public ApplicationConfig(AuthRepo repo) {
+        this.repo = repo;
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {

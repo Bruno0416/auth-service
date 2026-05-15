@@ -12,11 +12,18 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 public class SecurityConfig {
 
-    @Autowired
-    private JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    private final AuthenticationProvider authProvider;
 
     @Autowired
-    private AuthenticationProvider authProvider;
+    public SecurityConfig(
+        JwtAuthenticationFilter jwtAuthenticationFilter,
+        AuthenticationProvider authProvider
+    ) {
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.authProvider = authProvider;
+    }
 
     /*
     SpringBoot por defecto bloquea los endponits al importar algo del paquete 'security' en este caso el

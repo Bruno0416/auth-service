@@ -17,14 +17,22 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthServiceImpl implements AuthService {
 
-    @Autowired
-    private AuthRepo repo;
+    private final AuthRepo repo;
+
+    private final PasswordEncoder encoder;
+
+    private final JwtUtil jwtUtil;
 
     @Autowired
-    private PasswordEncoder encoder;
-
-    @Autowired
-    private JwtUtil jwtUtil;
+    public AuthServiceImpl(
+        AuthRepo repo,
+        PasswordEncoder encoder,
+        JwtUtil jwtUtil
+    ) {
+        this.repo = repo;
+        this.encoder = encoder;
+        this.jwtUtil = jwtUtil;
+    }
 
     @Override
     public AuthResponse register(RegisterRequest request) {
