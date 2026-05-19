@@ -23,8 +23,7 @@ public class AuthController {
     // Register
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(
-        @Valid @RequestBody RegisterRequest request,
-        BindingResult result
+        @Valid @RequestBody RegisterRequest request
     ) {
         return ResponseEntity.status(HttpStatus.CREATED).body(
             service.register(request)

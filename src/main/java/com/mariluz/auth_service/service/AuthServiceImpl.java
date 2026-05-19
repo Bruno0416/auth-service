@@ -37,7 +37,8 @@ public class AuthServiceImpl implements AuthService {
         User user = User.builder()
             .name(request.getName())
             .email(request.getEmail())
-            .password(encoder.encode(request.getPassword())) // guardamos el hash no la contrasenia real
+            .password(encoder.encode(request.getPassword()))
+            // guardamos el hash no la contrasenia real
             .role(Role.USER)
             .build();
 
@@ -46,7 +47,7 @@ public class AuthServiceImpl implements AuthService {
 
         // 3. retornamos la respuesta
         return AuthResponse.builder()
-            .userName(user.getName())
+            .name(user.getName())
             .email(user.getEmail())
             .token(jwtUtil.generateToken(user))
             .build();
@@ -73,7 +74,7 @@ public class AuthServiceImpl implements AuthService {
         return AuthResponse.builder()
             .token(jwtUtil.generateToken(user))
             .email(user.getEmail())
-            .userName(user.getName())
+            .name(user.getName())
             .build();
     }
 }

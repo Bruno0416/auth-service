@@ -9,7 +9,7 @@ import lombok.Data;
 public class RegisterRequest {
 
     @NotBlank
-    @Email(message = "Correo invalido.")
+    @Email(message = "Debe ser un correo valido: email@example.com")
     private String email;
 
     @NotBlank
