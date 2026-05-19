@@ -5,12 +5,23 @@ import java.util.HashMap;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    // Handler MethodNotSupported Exception
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<Map<String, String>> handleMethodNotSupported(
+        HttpRequestMethodNotSupportedException ex
+    ) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+            Map.of("error", ex.getMessage())
+        );
+    }
 
     // Handler Email In Use Exception
     @ExceptionHandler(EmailAlreadyInUseException.class)
@@ -49,11 +60,9 @@ public class GlobalExceptionHandler {
     ) {
         Map<String, String> errors = new HashMap<>();
 
-        ex
-            .getConstraintViolations()
-            .forEach(v -> {
-                errors.put(v.getPropertyPath().toString(), v.getMessage());
-            });
+        ex.getConstraintViolations().forEach(v -> {
+            errors.put(v.getPropertyPath().toString(), v.getMessage());
+        });
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
@@ -65,8 +74,7 @@ public class GlobalExceptionHandler {
     ) {
         Map<String, String> errors = new HashMap<>();
 
-        ex
-            .getBindingResult()
+        ex.getBindingResult()
             .getFieldErrors()
             .forEach(e -> errors.put(e.getField(), e.getDefaultMessage()));
 
