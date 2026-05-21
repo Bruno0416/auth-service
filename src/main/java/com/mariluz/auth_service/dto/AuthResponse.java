@@ -1,11 +1,9 @@
 package com.mariluz.auth_service.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Value;
 
-@Data
-@AllArgsConstructor
+@Value
 @Builder
 public class AuthResponse {
 

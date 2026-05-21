@@ -3,6 +3,7 @@ package com.mariluz.auth_service.exceptions;
 import jakarta.validation.ConstraintViolationException;
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -18,7 +19,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleMethodNotSupported(
         HttpRequestMethodNotSupportedException ex
     ) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(
             Map.of("error", ex.getMessage())
         );
     }
@@ -28,8 +29,18 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleEmailAlreadyInUse(
         EmailAlreadyInUseException ex
     ) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(
             Map.of("error", ex.getMessage())
+        );
+    }
+
+    // Handler Data Integrity Violation Exception (ej: email duplicado por race condition)
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Map<String, String>> handleDataIntegrityViolation(
+        DataIntegrityViolationException ex
+    ) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(
+            Map.of("error", "El correo ya esta registrado.")
         );
     }
 
@@ -79,5 +90,15 @@ public class GlobalExceptionHandler {
             .forEach(e -> errors.put(e.getField(), e.getDefaultMessage()));
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+    }
+
+    // Handler generico de ultima linea para excepciones no contempladas
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Map<String, String>> handleGenericException(
+        Exception ex
+    ) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+            Map.of("error", "Error interno del servidor.")
+        );
     }
 }

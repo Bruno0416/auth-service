@@ -10,14 +10,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import javax.crypto.SecretKey;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cglib.core.internal.Function;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 @Component
-@Slf4j
 public class JwtUtil {
 
     // extrae el secret de 'application.properties'
@@ -26,7 +24,7 @@ public class JwtUtil {
 
     // extrae la expiracion (milisegundos) de 'application.properties'
     @Value("${jwt.expiration}")
-    private int jwtExpirationMs;
+    private long jwtExpirationMs;
 
     // crea una variable privada para almacenar la SecretKey
     private SecretKey key;

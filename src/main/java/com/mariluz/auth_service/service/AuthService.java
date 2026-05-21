@@ -11,8 +11,8 @@ import com.mariluz.auth_service.dto.RegisterRequest;
 
 public interface AuthService {
     // register
-    public AuthResponse register(RegisterRequest request);
+    AuthResponse register(RegisterRequest request);
 
     // login
-    public AuthResponse login(LoginRequest request);
+    AuthResponse login(LoginRequest request);
 }

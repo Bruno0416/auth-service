@@ -4,7 +4,6 @@ import com.mariluz.auth_service.dto.AuthResponse;
 import com.mariluz.auth_service.dto.LoginRequest;
 import com.mariluz.auth_service.dto.RegisterRequest;
 import com.mariluz.auth_service.exceptions.EmailAlreadyInUseException;
-import com.mariluz.auth_service.exceptions.EmailNotFoundException;
 import com.mariluz.auth_service.exceptions.InvalidCredentialsException;
 import com.mariluz.auth_service.model.Role;
 import com.mariluz.auth_service.model.User;
@@ -13,6 +12,7 @@ import com.mariluz.auth_service.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +24,7 @@ public class AuthServiceImpl implements AuthService {
 
     private final JwtUtil jwtUtil;
 
+    @Transactional
     @Override
     public AuthResponse register(RegisterRequest request) {
         // 1. verificar si existe el usuario
@@ -59,9 +60,7 @@ public class AuthServiceImpl implements AuthService {
         User user = repo
             .findByEmail(request.getEmail())
             .orElseThrow(() ->
-                new EmailNotFoundException(
-                    "El correo no se encuentra registrado."
-                )
+                new InvalidCredentialsException("Credenciales invalidas.")
             );
 
         // 2. verificar contrasenia

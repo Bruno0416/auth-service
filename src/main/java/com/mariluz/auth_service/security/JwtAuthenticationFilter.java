@@ -3,11 +3,12 @@ Clase para autenticar solicitudes REST
 */
 package com.mariluz.auth_service.security;
 
-import io.jsonwebtoken.io.IOException;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,10 +33,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         HttpServletRequest request,
         HttpServletResponse response,
         FilterChain filterChain
-    ) throws ServletException, IOException, java.io.IOException {
+    ) throws ServletException, IOException {
         // 1. obtener token de la request
         final String token = getTokenFromRequest(request);
-        final String username;
 
         // 2. retornar si es null
         if (token == null) {
@@ -44,33 +44,42 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         // 3. obtener username del token
-        username = jwtUtil.getUsernameFromToken(token);
+        try {
+            final String username = jwtUtil.getUsernameFromToken(token);
 
-        // 4. si el nombre no es null
-        if (
-            username != null &&
-            SecurityContextHolder.getContext().getAuthentication() == null
-        ) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(
-                username
-            );
-
-            // 5. validamos el token
-            if (jwtUtil.isTokenValid(token, userDetails)) {
-                UsernamePasswordAuthenticationToken authToken =
-                    new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities()
-                    );
-
-                // 6. seteamos los detalles del authToken
-                authToken.setDetails(
-                    new WebAuthenticationDetailsSource().buildDetails(request)
+            // 4. si el nombre no es null
+            if (
+                username != null &&
+                SecurityContextHolder.getContext().getAuthentication() == null
+            ) {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(
+                    username
                 );
-                // 7. seteamos el authToken al context de seguridad
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+
+                // 5. validamos el token
+                if (jwtUtil.isTokenValid(token, userDetails)) {
+                    UsernamePasswordAuthenticationToken authToken =
+                        new UsernamePasswordAuthenticationToken(
+                            userDetails,
+                            null,
+                            userDetails.getAuthorities()
+                        );
+
+                    // 6. seteamos los detalles del authToken
+                    authToken.setDetails(
+                        new WebAuthenticationDetailsSource().buildDetails(
+                            request
+                        )
+                    );
+                    // 7. seteamos el authToken al context de seguridad
+                    SecurityContextHolder.getContext().setAuthentication(
+                        authToken
+                    );
+                }
             }
+        } catch (JwtException | IllegalArgumentException e) {
+            // token invalido o malformado: contexto de seguridad sin autenticacion
+            SecurityContextHolder.clearContext();
         }
 
         filterChain.doFilter(request, response);
