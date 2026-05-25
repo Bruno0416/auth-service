@@ -15,10 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 @Builder
-@ToString(exclude = "password") // password (hash) excluido para no exponerlo en logs
-@EqualsAndHashCode(of = "id") // equals/hashCode solo por id, evita conflictos con colecciones Hibernate
 @Entity(name = "users")
 public class User implements UserDetails {
 
