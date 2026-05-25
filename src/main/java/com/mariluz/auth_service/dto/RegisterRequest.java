@@ -13,7 +13,11 @@ public class RegisterRequest {
     private String email;
 
     @NotBlank
-    @Size(min = 6, message = "La contrasenia debe tener al menos 6 caracteres.")
+    @Size(
+        min = 6,
+        max = 60,
+        message = "La contrasenia debe tener al menos 6 caracteres."
+    )
     private String password;
 
     @NotBlank(message = "El nombre de usuario es obligatorio.")

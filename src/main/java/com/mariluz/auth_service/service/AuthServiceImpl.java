@@ -24,8 +24,8 @@ public class AuthServiceImpl implements AuthService {
 
     private final JwtUtil jwtUtil;
 
-    @Transactional
     @Override
+    @Transactional
     public AuthResponse register(RegisterRequest request) {
         // 1. verificar si existe el usuario
         if (repo.existsByEmail(request.getEmail())) {
