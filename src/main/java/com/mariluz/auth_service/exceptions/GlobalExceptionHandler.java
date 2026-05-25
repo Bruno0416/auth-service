@@ -1,6 +1,9 @@
 package com.mariluz.auth_service.exceptions;
 
+import com.mariluz.auth_service.dto.ErrorResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -16,58 +19,89 @@ public class GlobalExceptionHandler {
 
     // Handler MethodNotSupported Exception
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ResponseEntity<Map<String, String>> handleMethodNotSupported(
-        HttpRequestMethodNotSupportedException ex
+    public ResponseEntity<ErrorResponse> handleMethodNotSupported(
+        HttpRequestMethodNotSupportedException ex,
+        HttpServletRequest request
     ) {
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(
-            Map.of("error", ex.getMessage())
+            ErrorResponse.builder()
+                .timeStamp(LocalDateTime.now())
+                .status(HttpStatus.METHOD_NOT_ALLOWED.value())
+                .message(ex.getMessage())
+                .endpoint(request.getRequestURI())
+                .build()
         );
     }
 
     // Handler Email In Use Exception
     @ExceptionHandler(EmailAlreadyInUseException.class)
-    public ResponseEntity<Map<String, String>> handleEmailAlreadyInUse(
-        EmailAlreadyInUseException ex
+    public ResponseEntity<ErrorResponse> handleEmailAlreadyInUse(
+        EmailAlreadyInUseException ex,
+        HttpServletRequest request
     ) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(
-            Map.of("error", ex.getMessage())
+            ErrorResponse.builder()
+                .timeStamp(LocalDateTime.now())
+                .status(HttpStatus.CONFLICT.value())
+                .message(ex.getMessage())
+                .endpoint(request.getRequestURI())
+                .build()
         );
     }
 
     // Handler Data Integrity Violation Exception (ej: email duplicado por race condition)
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<Map<String, String>> handleDataIntegrityViolation(
-        DataIntegrityViolationException ex
+    public ResponseEntity<ErrorResponse> handleDataIntegrityViolation(
+        DataIntegrityViolationException ex,
+        HttpServletRequest request
     ) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(
-            Map.of("error", "El correo ya esta registrado.")
+            ErrorResponse.builder()
+                .timeStamp(LocalDateTime.now())
+                .status(HttpStatus.CONFLICT.value())
+                .message("El correo ya esta registrado")
+                .endpoint(request.getRequestURI())
+                .build()
         );
     }
 
     // Handler Invalid Credentials Exception
     @ExceptionHandler(InvalidCredentialsException.class)
-    public ResponseEntity<Map<String, String>> handleInvalidCredentials(
-        InvalidCredentialsException ex
+    public ResponseEntity<ErrorResponse> handleInvalidCredentials(
+        InvalidCredentialsException ex,
+        HttpServletRequest request
     ) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-            Map.of("error", ex.getMessage())
+            ErrorResponse.builder()
+                .timeStamp(LocalDateTime.now())
+                .status(HttpStatus.UNAUTHORIZED.value())
+                .message(ex.getMessage())
+                .endpoint(request.getRequestURI())
+                .build()
         );
     }
 
     // Handler Email Not Found Exception
     @ExceptionHandler(EmailNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleEmailNotFound(
-        EmailNotFoundException ex
+    public ResponseEntity<ErrorResponse> handleEmailNotFound(
+        EmailNotFoundException ex,
+        HttpServletRequest request
     ) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-            Map.of("error", ex.getMessage())
+            ErrorResponse.builder()
+                .timeStamp(LocalDateTime.now())
+                .status(HttpStatus.NOT_FOUND.value())
+                .message(ex.getMessage())
+                .endpoint(request.getRequestURI())
+                .build()
         );
     }
 
     // Handler Jakarta contraint violation exception
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<Map<String, String>> handleJakartaViolationException(
-        ConstraintViolationException ex
+    public ResponseEntity<ErrorResponse> handleJakartaViolationException(
+        ConstraintViolationException ex,
+        HttpServletRequest request
     ) {
         Map<String, String> errors = new HashMap<>();
 
@@ -75,13 +109,22 @@ public class GlobalExceptionHandler {
             errors.put(v.getPropertyPath().toString(), v.getMessage());
         });
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+            ErrorResponse.builder()
+                .timeStamp(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .message("Error de validacion")
+                .errors(errors)
+                .endpoint(request.getRequestURI())
+                .build()
+        );
     }
 
     // Global Handler | Validacion BindingResult ahora se corrobora aqui en el global handler
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidationErrors(
-        MethodArgumentNotValidException ex
+    public ResponseEntity<ErrorResponse> handleValidationErrors(
+        MethodArgumentNotValidException ex,
+        HttpServletRequest request
     ) {
         Map<String, String> errors = new HashMap<>();
 
@@ -89,16 +132,30 @@ public class GlobalExceptionHandler {
             .getFieldErrors()
             .forEach(e -> errors.put(e.getField(), e.getDefaultMessage()));
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+            ErrorResponse.builder()
+                .timeStamp(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .message("Error de validacion")
+                .errors(errors)
+                .endpoint(request.getRequestURI())
+                .build()
+        );
     }
 
     // Handler generico de ultima linea para excepciones no contempladas
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, String>> handleGenericException(
-        Exception ex
+    public ResponseEntity<ErrorResponse> handleGenericException(
+        Exception ex,
+        HttpServletRequest request
     ) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-            Map.of("error", "Error interno del servidor.")
+            ErrorResponse.builder()
+                .timeStamp(LocalDateTime.now())
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .message("Error interno del servidor")
+                .endpoint(request.getRequestURI())
+                .build()
         );
     }
 }
