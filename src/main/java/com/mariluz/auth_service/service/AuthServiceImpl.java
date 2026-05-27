@@ -10,6 +10,9 @@ import com.mariluz.auth_service.model.User;
 import com.mariluz.auth_service.repository.AuthRepo;
 import com.mariluz.auth_service.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +26,8 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder encoder;
 
     private final JwtUtil jwtUtil;
+
+    private final AuthenticationManager authenticationManager;
 
     @Override
     @Transactional
@@ -38,8 +43,8 @@ public class AuthServiceImpl implements AuthService {
         User user = User.builder()
             .name(request.getName())
             .email(request.getEmail())
-            .password(encoder.encode(request.getPassword()))
             // guardamos el hash no la contrasenia real
+            .password(encoder.encode(request.getPassword()))
             .role(Role.USER)
             .build();
 
@@ -54,18 +59,25 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthResponse login(LoginRequest request) {
-        // 1. buscar el correo
+        // 1. autenticar usuario (delegando la validacion de credenciales a AuthenticationManager)
+        // en vez de hacerlo de manera manual comparando el hash por medio de encoder.matches
+        try {
+            authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                    request.getEmail(),
+                    request.getPassword()
+                )
+            );
+        } catch (AuthenticationException e) {
+            throw new InvalidCredentialsException("Credenciales invalidas.");
+        }
+
+        // 2. buscar el usuario
         User user = repo
             .findByEmail(request.getEmail())
             .orElseThrow(() ->
                 new InvalidCredentialsException("Credenciales invalidas.")
             );
-
-        // 2. verificar contrasenia
-        if (!encoder.matches(request.getPassword(), user.getPassword())) {
-            // verificamos si la contrasenia coincide
-            throw new InvalidCredentialsException("Credenciales invalidas."); // si no arrojamos error de credenciales
-        }
 
         // 3. retornar respuesta
         return AuthResponse.builder()

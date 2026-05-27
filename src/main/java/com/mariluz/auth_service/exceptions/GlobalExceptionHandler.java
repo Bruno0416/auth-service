@@ -81,22 +81,6 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // Handler Email Not Found Exception
-    @ExceptionHandler(EmailNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleEmailNotFound(
-        EmailNotFoundException ex,
-        HttpServletRequest request
-    ) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-            ErrorResponse.builder()
-                .timeStamp(LocalDateTime.now())
-                .status(HttpStatus.NOT_FOUND.value())
-                .message(ex.getMessage())
-                .endpoint(request.getRequestURI())
-                .build()
-        );
-    }
-
     // Handler Jakarta contraint violation exception
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ErrorResponse> handleJakartaViolationException(
