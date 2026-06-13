@@ -33,7 +33,15 @@ public class SecurityConfig {
             // definimos las reglas de autorizacion para las rutas
             .authorizeHttpRequests(auth ->
                 auth
-                    .requestMatchers("/auth/**") // Cualquier usuario puede acceder a estas rutas sin estar autenticado
+
+                    .requestMatchers(
+                        // Cualquier usuario puede acceder a estas rutas sin estar autenticado
+                        "/auth/**",
+                        // Documentacion de la API
+                        "/v3/api-docs/**",
+                        "/swagger-ui/**",
+                        "/swagger-ui.html"
+                    )
                     .permitAll()
                     // Cualquier otra ruta que no haya coincidido con las reglas
                     .anyRequest()
