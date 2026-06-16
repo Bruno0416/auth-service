@@ -70,25 +70,6 @@ public class AuthController {
             )
         ),
         @ApiResponse(
-            responseCode = "405",
-            description = "Método HTTP no soportado.",
-            content = @Content(
-                mediaType = "application/json",
-                schema = @Schema(implementation = ErrorResponse.class),
-                examples = @ExampleObject(
-                    value = """
-                    {
-                        "endpoint": "/auth/register",
-                        "errors": null,
-                        "message": "Request method 'GET' is not supported",
-                        "status": 405,
-                        "timeStamp": "2026-06-12T05:11:58"
-                    }
-                    """
-                )
-            )
-        ),
-        @ApiResponse(
             responseCode = "409",
             description = "Conflicto. El correo proporcionado ya se encuentra registrado en el sistema.",
             content = @Content(
@@ -125,7 +106,7 @@ public class AuthController {
                     """
                 )
             )
-        )
+        ),
     })
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(
@@ -198,25 +179,6 @@ public class AuthController {
             )
         ),
         @ApiResponse(
-            responseCode = "405",
-            description = "Método HTTP no soportado.",
-            content = @Content(
-                mediaType = "application/json",
-                schema = @Schema(implementation = ErrorResponse.class),
-                examples = @ExampleObject(
-                    value = """
-                    {
-                        "endpoint": "/auth/login",
-                        "errors": null,
-                        "message": "Request method 'GET' is not supported",
-                        "status": 405,
-                        "timeStamp": "2026-06-12T05:11:58"
-                    }
-                    """
-                )
-            )
-        ),
-        @ApiResponse(
             responseCode = "500",
             description = "Error interno del servidor no controlado.",
             content = @Content(
@@ -234,7 +196,7 @@ public class AuthController {
                     """
                 )
             )
-        )
+        ),
     })
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(
