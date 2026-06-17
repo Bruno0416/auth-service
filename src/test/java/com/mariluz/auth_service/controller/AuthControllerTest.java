@@ -134,7 +134,7 @@ public class AuthControllerTest {
 
     // Codigo 400
     @Test
-    public void testLoginEmailInvalido() throws Exception {
+    public void testLoginInvalidEmail() throws Exception {
         // 1. generamos request invalido
         String body = """
             {
