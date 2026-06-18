@@ -10,9 +10,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
 public interface AuthApi {
     // Register
@@ -97,10 +95,7 @@ public interface AuthApi {
             )
         ),
     })
-    @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(
-        @Valid @RequestBody RegisterRequest request
-    );
+    ResponseEntity<AuthResponse> register(RegisterRequest request);
 
     // Login
     @Operation(
@@ -183,8 +178,5 @@ public interface AuthApi {
             )
         ),
     })
-    @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(
-        @Valid @RequestBody LoginRequest request
-    );
+    ResponseEntity<AuthResponse> login(LoginRequest request);
 }
